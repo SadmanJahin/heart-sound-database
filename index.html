@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+  
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">  
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    
+  <link rel="stylesheet" href="style.css" type="text/css" />
+  <script src="https://unpkg.com/wavesurfer.js"></script>
+</head>
+
+<body id="body">
+
+ 
+<div  id="blur-section">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark py-4">
+   <div class="container">
+   <div class="row">
+       <img class="mr-3" src="media/favorite.png" width="8%">
+      <a class="navbar-brand" href="#"><p class="h2">Heart Sound Database</p></a>
+   </div>
+   <div class="row">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
+          <a class="nav-item nav-link" href="#">Sound Categories</a>
+          <a class="nav-item nav-link disabled" href="#">Download</a>
+        </div>
+      </div>
+   </div>
+  </div>
+</nav>
+<div class="container" id="container"> 
+    <!-- Contains are loaded from Javascript -->
+</div>
+
+  
+</div>
+
+ 
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="jquery-csv.js"></script>
+  
+  <script>
+      
+       document.getElementById("blur-section").classList.add("blur");
+      
+        
+        var container = document.getElementById("container");
+        var body = document.getElementById("body");
+        var data;
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() 
+        {
+            if (this.readyState == 4 && this.status == 200) 
+            {
+                //Typical action to be performed when the document is ready:
+                csv=xhttp.responseText
+                data = $.csv.toArrays(csv);    
+                console.log(data);
+                for (let i = 1; i < data.length; i++) 
+                {
+                  console.log(data[i][2]);
+                  container.innerHTML+=' <div class="audio-panel m-4">    <div class="audio-info">        <h1>Heart Sound '+i+'</h1>        <p>Age:'+data[i][2]+' Gender:'+data[i][1]+'</p>    </div>    <div id="'+i+'"></div> <div class="p-2" id="load-'+i+'" style="visibility: hidden;"><i class="fas fa-circle-notch fa-spin fa-2x"></i></div>    <a class="p-2 wave-btn" href="#" onclick="wavesurfer['+i+'].skipBackward();" style="text-decoration:none;">     <i class="text-dark fas fa-backward fa-3x"></i>    </a>    <a class="p-2 wave-btn" href="#" onclick="currentTrack('+i+');" style="text-decoration:none;">     <i class="text-success fas fa-play fa-3x" id="play_btn'+i+'"></i> <i class="text-success fas fa-pause fa-3x" id="pause_btn'+i+'" style="display: none;"></i>    </a>    <a class="p-2 wave-btn" href="#" onclick="wavesurfer['+i+'].skipForward()" style="text-decoration:none;">     <i class="text-dark fas fa-forward fa-3x"></i>    </a>    <a class="p-2 wave-btn" href="#" onclick="wavesurfer['+i+'].toggleMute()" style="text-decoration:none;">     <i class="text-danger fas fa-volume-off fa-3x"></i>    </a>    </div>';    
+                }
+                body.innerHTML+='<i class="fas fa-sync fa-8x fa-spin" id="spinner"></i>';
+                   setTimeout(function() {
+                       document.getElementById("spinner").style.display="none";
+                       document.getElementById("blur-section").classList.remove("blur");
+                       document.getElementById("body").style.overflow="visible";
+                       }, 1800);
+            }
+    
+        };
+        xhttp.open("GET", "media/Dataset.csv", true);
+        xhttp.send();
+  
+ </script>
+  
+  
+  <script>
+      
+      
+      var delayInMilliseconds = 1000; //1 second
+
+      var wavesurfer=[];
+      
+      setTimeout(function() {
+        for (let i = 1; i < data.length; i++) {
+       var wave = document.getElementById(i);  
+           console.log(wave);
+       wavesurfer[i] = WaveSurfer.create({
+        container: wave,
+        backend: 'MediaElement',
+        waveColor: '#d6d6d6',
+        progressColor: '#e82556',
+        cursorColor: 'transparent'
+    });
+var myAudio = new Audio('media/audio/'+data[i][0]+'.wav');
+wavesurfer[i].load(myAudio);
+    }
+          
+
+          
+  var elements = document.getElementsByClassName("wave-btn");
+
+
+
+for (var i = 0; i < elements.length; i++) {
+    elements[i].addEventListener('click', function (e) {
+    e.preventDefault();
+    })    
+}
+}, delayInMilliseconds);
+      
+  
+</script>
+<script>
+var prev_track=-1; 
+var manually_paused =false;    
+    
+    function currentTrack(i) {
+        current_track=i;
+        element=document.getElementById("play_btn"+current_track);
+        
+        //If not the same track and starting track it pauses previous track
+        if(prev_track!=current_track && prev_track!=-1 && !manually_paused)
+            {
+                document.getElementById("play_btn"+prev_track).style.display='inline'    
+                document.getElementById("pause_btn"+prev_track).style.display='none'   
+                wavesurfer[prev_track].playPause();
+               
+            }
+        //If current track playing pauses and vice/versa
+        if(window.getComputedStyle(element).display === "none")
+            {
+                document.getElementById("play_btn"+current_track).style.display='inline'    
+                document.getElementById("pause_btn"+current_track).style.display='none' 
+                wavesurfer[current_track].playPause();
+                manually_paused=true;
+            }
+        else
+            {
+                
+            document.getElementById("load-"+current_track).style.visibility="visible";
+             //Timeout is used for low sound bug fixes after 3s   
+             setTimeout(function() {  
+                
+                document.getElementById("load-"+current_track).style.visibility="hidden";
+                document.getElementById("play_btn"+current_track).style.display='none'    
+                document.getElementById("pause_btn"+current_track).style.display='inline'    
+                wavesurfer[current_track].playPause();
+                manually_paused=false;
+                 }, 3000);
+            }
+       // alert(prev_track);
+       // alert(current_track);
+          
+        
+       if(prev_track!=current_track)    
+          prev_track=current_track;
+        
+       wavesurfer[current_track].on('finish', function () {
+       document.getElementById("play_btn"+current_track).style.display='inline'    
+       document.getElementById("pause_btn"+current_track).style.display='none' 
+       manually_paused=true;
+});
+    }
+    
+    
+/*function currentTrack(i) {
+    current_track=i;
+    if(prev_track==current_track)
+        prev_track_paused=true;
+else if(prev_track!=-1 && !prev_track_paused)
+    {
+        document.getElementById("play_btn"+prev_track).style.display='inline'    
+        document.getElementById("pause_btn"+prev_track).style.display='none'        
+        wavesurfer[prev_track].playPause();
+    }
+    prev_track=current_track;
+    
+    setTimeout(function () {
+        element=document.getElementById("play_btn"+current_track);
+        if(window.getComputedStyle(element).display === "none")
+            {
+                document.getElementById("play_btn"+current_track).style.display='inline'    
+                document.getElementById("pause_btn"+current_track).style.display='none'    
+            }
+        else
+            {
+                document.getElementById("play_btn"+current_track).style.display='none'    
+                document.getElementById("pause_btn"+current_track).style.display='inline'    
+            }
+  wavesurfer[current_track].playPause();
+}, 0)
+   
+    }*/
+   
+    
+</script>   
+   
+   
+    
+</body>
+</html>
