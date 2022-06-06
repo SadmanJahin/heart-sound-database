@@ -29,21 +29,56 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-          <a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
-          <a class="nav-item nav-link" href="#">Sound Categories</a>
+          <a class="nav-item nav-link active" href="#" onclick="location.reload();">Home <span class="sr-only">(current)</span></a>
+          <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown">Categories</a>
+                    <div class="dropdown-menu">
+                        <a href="#" class="dropdown-item" onClick="change_category('All');">All Sound</a> 
+                        <a href="#" class="dropdown-item" onClick="change_category('Normal');">Normal Sound</a> 
+                        <a href="#" class="dropdown-item" onClick="change_category('Child');">Child Heart Sound</a>
+                        <a href="#" class="dropdown-item" onClick="change_category('Female');">Female Heart Sound</a>
+                        <a href="#" class="dropdown-item" onClick="change_category('Murmur');">Heart Murmur</a>
+                    </div>
+                </div>
           <a class="nav-item nav-link disabled" href="#">Download</a>
         </div>
       </div>
    </div>
   </div>
 </nav>
+
 <div class="container" id="container"> 
     <!-- Contains are loaded from Javascript -->
+    
+</div>
+<div class="container mt-4">
+   <div class="row">
+   <div class="col-md-3"></div>
+   <div class="col-md-5">
+   <p class="text-center h5 mr-3"><i id="total_no"></i></p>
+    <nav aria-label="...">
+      <ul class="pagination pagination-lg">
+        <li class="page-item disabled">
+          <span class="page-link">Previous</span>
+        </li>
+        <li class="page-item active"><a class="page-link" href="#" onclick="scrolltop(); content_load(1,11,1);">1</a></li>
+        <li class="page-item"><a class="page-link" href="#" onclick="scrolltop(); content_load(11,21,2);">2</a></li>
+        <li class="page-item"><a class="page-link" href="#" onclick="scrolltop(); content_load(21,31,3);">3</a></li>
+        <li class="page-item"><a class="page-link" href="#" onclick="scrolltop(); content_load(31,41,4);">4</a></li>
+        <li class="page-item">
+          <a class="page-link" href="#">Next</a>
+        </li>
+      </ul>
+    </nav>
+    </div>
+    <div class="col-md-4"></div>
+   </div>
 </div>
 
   
 </div>
 
+<i class="fas fa-sync fa-8x fa-spin" id="spinner"></i>
  
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -51,13 +86,70 @@
   <script src="jquery-csv.js"></script>
   
   <script>
+        $(document).ready(function(){
+            $(".dropdown").hover(function(){
+                var dropdownMenu = $(this).children(".dropdown-menu");
+                if(dropdownMenu.is(":visible")){
+                    dropdownMenu.parent().toggleClass("open");
+                }
+            });
+        });     
+  </script>
+  
+  <script>
       
-       document.getElementById("blur-section").classList.add("blur");
+      function scrolltop()
+      {
+          $('html,body').scrollTop(0);
+      }
+      
+      
+      var wavesurfer=[];
+      var data;
+      var total=0;
+      var category="All"
+      
+      function change_category(new_category)
+      {
+          
+          category=new_category;
+          data =[];
+          content_load(1,11,1);
+          
+      }
+      
+    function content_load(first_index,last_index,toggle)
+      {
+          
+       var audio_count=0+(toggle-1)*10;  
+          const page_items = document.getElementsByClassName('page-item');
+          
+          
+            for (var i = 0; i < page_items.length; i++) 
+            {
+                var item = page_items[i];  
+                item.classList.remove('active');
+                
+                if(toggle ==i)
+                    {
+                        
+                        item.classList.add('active');
+                    }
+                
+            }
+
+          
+          //document.getElementById(toggle).classList.add("active");
+
+          
+          
+          document.getElementById("blur-section").classList.add("blur");
       
         
         var container = document.getElementById("container");
+        container.innerHTML="";
         var body = document.getElementById("body");
-        var data;
+        
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() 
         {
@@ -65,37 +157,115 @@
             {
                 //Typical action to be performed when the document is ready:
                 csv=xhttp.responseText
-                data = $.csv.toArrays(csv);    
+                csv_data=$.csv.toArrays(csv);
+                if(category=="All")
+                    {
+                        data=csv_data;
+                      
+                    }
+                else if(category=="Murmur")
+                    {
+                       
+                        var j=1;
+                      for (let i = 0; i < csv_data.length; i++) 
+                          {
+                              if(csv_data[i][7] =='Murmur' || csv_data[i][7]=='Heart Disease')
+                                  {
+                                      data[j]=csv_data[i];
+                                      j++;
+                                  }
+                                  
+                          }
+                    }
+                
+                else if(category=="Child")
+                    {
+                       
+                        var j=1;
+                      for (let i = 1; i < csv_data.length; i++) 
+                          {
+                              if(csv_data[i][2]>=0 && csv_data[i][2]<=6)
+                                  {
+                                      data[j]=csv_data[i];
+                                      j++;
+                                  }
+                                  
+                          }
+                    }
+                else if(category=="Female")
+                    {
+                       
+                        var j=1;
+                      for (let i = 1; i < csv_data.length; i++) 
+                          {
+                              if(csv_data[i][1]=="Female")
+                                  {
+                                      data[j]=csv_data[i];
+                                      j++;
+                                  }
+                                  
+                          }
+                    }
+                else if(category=="Normal")
+                    {
+                       
+                        var j=1;
+                      for (let i = 1; i < csv_data.length; i++) 
+                          {
+                              if(csv_data[i][7]=="Normal")
+                                  {
+                                      data[j]=csv_data[i];
+                                      j++;
+                                  }
+                                  
+                          }
+                    }
+                
+                total=data.length-1;
                 console.log(data);
-                for (let i = 1; i < data.length; i++) 
+                
+                if(data.length<last_index)
+                    last_index=data.length;   
+                 
+                for (let i = first_index; i < last_index; i++) 
                 {
+                  audio_count++;
                   console.log(data[i][2]);
-                  container.innerHTML+=' <div class="audio-panel m-4">    <div class="audio-info">        <h1>Heart Sound '+i+'</h1>        <p>Age:'+data[i][2]+' Gender:'+data[i][1]+'</p>    </div>    <div id="'+i+'"></div> <div class="p-2" id="load-'+i+'" style="visibility: hidden;"><i class="fas fa-circle-notch fa-spin fa-2x"></i></div>    <a class="p-2 wave-btn" href="#" onclick="wavesurfer['+i+'].skipBackward();" style="text-decoration:none;">     <i class="text-dark fas fa-backward fa-3x"></i>    </a>    <a class="p-2 wave-btn" href="#" onclick="currentTrack('+i+');" style="text-decoration:none;">     <i class="text-success fas fa-play fa-3x" id="play_btn'+i+'"></i> <i class="text-success fas fa-pause fa-3x" id="pause_btn'+i+'" style="display: none;"></i>    </a>    <a class="p-2 wave-btn" href="#" onclick="wavesurfer['+i+'].skipForward()" style="text-decoration:none;">     <i class="text-dark fas fa-forward fa-3x"></i>    </a>    <a class="p-2 wave-btn" href="#" onclick="wavesurfer['+i+'].toggleMute()" style="text-decoration:none;">     <i class="text-danger fas fa-volume-off fa-3x"></i>    </a>    </div>';    
+                  container.innerHTML+=' <div class="audio-panel m-4" id="panel'+i+'">    <div class="audio-info">        <h1>Heart Sound '+i+'</h1>        <p class="h5">Age:'+data[i][2]+'  Gender:'+data[i][1]+' Label: '+ data[i][7] +'</p>    </div>    <div id="'+i+'"></div> <div class="p-2" id="load-'+i+'" style="visibility: hidden;"><i class="fas fa-circle-notch fa-spin fa-2x"></i></div>    <a class="p-2 wave-btn" href="#" onclick="wavesurfer['+i+'].skipBackward();" style="text-decoration:none;">     <i class="text-dark fas fa-backward fa-3x"></i>    </a>    <a class="p-2 wave-btn" href="#" onclick="currentTrack('+i+');" style="text-decoration:none;">     <i class="text-success fas fa-play fa-3x" id="play_btn'+i+'"></i> <i class="text-success fas fa-pause fa-3x" id="pause_btn'+i+'" style="display: none;"></i>    </a>    <a class="p-2 wave-btn" href="#" onclick="wavesurfer['+i+'].skipForward()" style="text-decoration:none;">     <i class="text-dark fas fa-forward fa-3x"></i>    </a>    <a class="p-2 wave-btn" href="#" onclick="wavesurfer['+i+'].toggleMute()" style="text-decoration:none;">     <i class="text-danger fas fa-volume-off fa-3x"></i>    </a>    </div>';   
+                    
                 }
-                body.innerHTML+='<i class="fas fa-sync fa-8x fa-spin" id="spinner"></i>';
+                 if(window.getComputedStyle(document.getElementById("spinner")).display === "none")
+                     {
+                         
+                         document.getElementById("spinner").style.display="block";
+                     }
+               
                    setTimeout(function() {
                        document.getElementById("spinner").style.display="none";
                        document.getElementById("blur-section").classList.remove("blur");
                        document.getElementById("body").style.overflow="visible";
-                       }, 1800);
+                       }, 2500);
+                
+                if(audio_count>total)
+                    audio_count=0;
+                document.getElementById("total_no").innerHTML="Showing "+audio_count+" of "+total+" Sounds";
             }
     
         };
         xhttp.open("GET", "media/Dataset.csv", true);
         xhttp.send();
-  
- </script>
-  
-  
-  <script>
-      
-      
-      var delayInMilliseconds = 1000; //1 second
+          
+          
+          
+             
+      var delayInMilliseconds = 1500; //1 second
 
-      var wavesurfer=[];
+      
       
       setTimeout(function() {
-        for (let i = 1; i < data.length; i++) {
+          if(data.length<last_index)
+                    last_index=data.length;
+        for (let i = first_index; i < last_index; i++) {
        var wave = document.getElementById(i);  
            console.log(wave);
        wavesurfer[i] = WaveSurfer.create({
@@ -122,6 +292,62 @@ for (var i = 0; i < elements.length; i++) {
 }
 }, delayInMilliseconds);
       
+          
+      }
+    
+content_load(1,11,1)      
+    
+    
+ 
+  </script>
+  
+  
+ 
+  <script>
+      
+       
+  
+ </script>
+ <script>
+ function showMurmurSounds()
+     {
+         for (let i = 1; i < data.length; i++) 
+                {
+                    if(data[i][7] =='murmur' || data[i][7]=='heart disease')
+                        {
+                            document.getElementById('panel'+i).style.display="block";
+                        }
+                    else
+                    {
+                         document.getElementById('panel'+i).style.display="none";
+                    }
+                }
+         
+         
+     }
+ function showChildSounds()
+     {
+         for (let i = 1; i < data.length; i++) 
+                {
+                    if(data[i][2]>=0 && data[i][2]<=6)
+                        {
+                             document.getElementById('panel'+i).style.display="block";
+                        }
+                    else
+                    {
+                         document.getElementById('panel'+i).style.display="none";
+                    }
+                }
+         
+         
+     }    
+     
+    
+ </script>
+  
+  <script>
+      
+     
   
 </script>
 <script>

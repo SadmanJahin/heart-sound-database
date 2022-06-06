@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Advent+Pro:wght@700&display=swap');
+
 body {
-	
+	font-family: 'Advent Pro', cursive;
     background-color: #f7f7f7;	
      overflow: hidden;
 }
@@ -7,9 +9,9 @@ body {
 .blur {
    -webkit-filter: blur(10px);
 }
-
-.blur-section{
-  
+.vcenter-item{
+    display: flex;
+    align-items: center;
 }
 
 
@@ -19,6 +21,12 @@ body {
     position: absolute;    
 }
 
+.dropdown:hover .dropdown-menu{
+        display: block;
+    }
+.dropdown-menu{
+        margin-top: 0;
+    }
 
 
 .audio-panel{
@@ -29,9 +37,3 @@ body {
     
 }
 
-
-.audio-info{
-   
-    
-    
-}
