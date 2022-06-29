@@ -4,7 +4,7 @@ file_name,gender,age,blood_pressure,glucose,smoking,disease,class
 100322_3,Male,25,,,,,Unlabeled
 100322_4,Male,23,,,,,Unlabeled
 100322_5,Male,35,,,,,Unlabeled
-100322_6,Male,1.5,,,,,Normal
+100322_6,Female,1.5,,,,,Normal
 100322_7,Male,23,,,,,Unlabeled
 100322_8,Male,24,,,,,Unlabeled
 100322_9,Male,24,,,,,Unlabeled
@@ -13,4 +13,5 @@ file_name,gender,age,blood_pressure,glucose,smoking,disease,class
 100322_12,Female,55,,,,,Normal
 100322_13,Male,45,,,,,Murmur
 240322_12,Male,1.5,,,,,Heart Disease
-290622_1,Male,2,,,,,Normal
+290622_1,Female,2,,,,,Normal
+230622_5,Male,0.3,,,,,Heart Disease
