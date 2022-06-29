@@ -14,5 +14,6 @@ file_name,gender,age,blood_pressure,glucose,smoking,disease,class
 100322_13,Male,45,,,,,Murmur
 240322_12,Male,1.5,,,,,Heart Disease
 290622_1,Female,2,,,,,Normal
-230622_5,Male,0.3,,,,,Heart Disease
 290622_2,Male,24,,,,,Normal
+230622_5,Male,0.3,,,,,Heart Disease
+290622_3,Male,24,,,,,Normal
